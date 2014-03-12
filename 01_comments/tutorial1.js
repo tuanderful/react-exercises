@@ -2,8 +2,8 @@
 
 var converter = new Showdown.converter();
 
-var data = [
-  {author: "Pete Hunt"}, text: "This is one comment"},
+var myData = [
+  {author: "Pete Hunt", text: "This is one comment"},
   {author: "Jordan Walke", text: "This is *another* comment"}
 ];
 
@@ -25,10 +25,17 @@ var Comment = React.createClass({
 var CommentList = React.createClass({
   render: function() {
     // attributes passed into the Comment component are accessible via {this.props.attrName}
+    //    <Comment author="Jordan Walke">This is *another* comment</Comment>
+
+    // alternatively, we can pass in a data object, then map it
+    var commentNodes = this.props.data.map(function(commentData) {
+      return (
+        <Comment author={commentData.author}>{commentData.text}</Comment>
+      );
+    })
     return (
       <div className="commentList">
-        <Comment author="Pete Hunt">This is one comment</Comment>
-        <Comment author="Jordan Walke">This is *another* comment</Comment>
+        {commentNodes}
       </div>
     );
   }
@@ -52,7 +59,7 @@ var CommentBox = React.createClass({
     return (
       <div className="commentBox">        
         Hello world! I am a CommentBox.
-        <CommentList />
+        <CommentList data={this.props.data} />
         <CommentForm />
       </div>
     );
@@ -63,6 +70,6 @@ var CommentBox = React.createClass({
 
 // 
 React.renderComponent(
-  <CommentBox />,
+  <CommentBox data={myData} />,
   document.getElementById('content')
 );
