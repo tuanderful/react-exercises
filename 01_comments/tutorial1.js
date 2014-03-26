@@ -118,7 +118,7 @@ var CommentBox = React.createClass({
 });
 
 
-// 
+// define stuff, such as pollInterval on the owner. Ownee accesses these attributes via this.props.pollInterval
 React.renderComponent(
   <CommentBox url="comments.json" pollInterval={2000} />,
   document.getElementById('content')
