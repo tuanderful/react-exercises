@@ -53,13 +53,29 @@ var CommentForm = React.createClass({
 
 // Create a react component, CommentBox
 var CommentBox = React.createClass({
+  loadCommentsFromServer: function() {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this)
+    });
+  },
+  getInitialState: function() {
+    return {data: []};
+  },
+  componentWillMount: function() {
+    this.loadCommentsFromServer();
+    setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+  },
   render: function() {
     //why className and not class?
     // not DOM nodes, but instantiation of React `div` components
     return (
       <div className="commentBox">        
         Hello world! I am a CommentBox.
-        <CommentList data={this.props.data} />
+        <CommentList data={this.state.data} />
         <CommentForm />
       </div>
     );
@@ -70,6 +86,6 @@ var CommentBox = React.createClass({
 
 // 
 React.renderComponent(
-  <CommentBox data={myData} />,
+  <CommentBox url="comments.json" pollInterval={2000} />,
   document.getElementById('content')
 );
