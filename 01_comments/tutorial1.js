@@ -42,11 +42,30 @@ var CommentList = React.createClass({
 });
 
 var CommentForm = React.createClass({
+  handleSubmit: function() {
+    // this.refs exposes the elements that have a ref attribute
+    var author = this.refs.author.getDOMNode().value.trim();
+    var text = this.refs.text.getDOMNode().value.trim();
+
+    // pass information back up to the parent (via props)
+    // the object is 'comment' on CommentBox.handleCommentSubmit
+    this.props.onCommentSubmit({author: author, text: text});
+
+    // Clear the form upon submission
+    this.refs.author.getDOMNode().value = "";
+    this.refs.text.getDOMNode().value = "";
+
+    // return false to prevent browser default action
+    return false;
+  },
   render: function() {
+    // ref attribute provides the field name the data is bound to in this.refs
     return (
-      <div className="commentForm">
-        Hello, world! I am a commentForm.
-      </div>
+      <form className="commentForm" onSubmit={this.handleSubmit}>
+        <input type="text" placeholder="Your name" ref="author"/>
+        <input type="text" placeholder="Say something..." ref="text" />
+        <input type="submit" value="Post" />
+      </form>
     );
   }
 });
@@ -62,6 +81,20 @@ var CommentBox = React.createClass({
       }.bind(this)
     });
   },
+  handleCommentSubmit: function(comment) {
+    var comments = this.state.data;
+    var newComments = comments.concat([comment]);
+    this.setState({data: newComments});
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      type: 'POST',
+      data: comment,
+      success: function(data) {
+        this.setState({data: data});
+      }.bind(this)
+    })
+  },
   getInitialState: function() {
     return {data: []};
   },
@@ -76,9 +109,10 @@ var CommentBox = React.createClass({
       <div className="commentBox">        
         Hello world! I am a CommentBox.
         <CommentList data={this.state.data} />
-        <CommentForm />
+        <CommentForm onCommentSubmit={this.handleCommentSubmit} />
       </div>
     );
+    //onCommentSubmit?? we invoke it form CommentForm when we handleSubmit
     // also, cant put comments in that return!
   }
 });
