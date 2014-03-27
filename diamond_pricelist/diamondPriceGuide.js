@@ -50,6 +50,34 @@ function getPriceTableIndex(caratSize) {
     return 17;
 }
 
+function getOversizePremium(carat) {
+  if (carat >= .6 && carat <= .69)
+    return {min: 1.07, max: 1.10};
+
+  else if (carat >= .8 && carat <= .89)
+    return {min: 1.07, max: 1.12};
+
+  else if (carat >= .95 && carat <= .99)
+    return {min: 1.05, max: 1.10};
+
+  else if (carat >= 1.25 && carat <= 1.49)
+    return {min: 1.05, max: 1.10};
+
+  else if (carat >= 1.7 && carat <= 1.99)
+    return {min: 1.07, max: 1.12};
+
+  else if (carat >= 2.5 && carat <= 2.99)
+    return {min: 1.05, max: 1.10};
+
+  else if (carat >= 3.5 && carat <= 3.99)
+    return {min: 1.05, max: 1.10};
+
+  else if (carat >= 4.5 && carat <= 4.99)
+    return {min: 1.05, max: 1.10};
+
+  return 1;
+}
+
 
 var Cost = React.createClass({
   render: function() {
@@ -57,6 +85,23 @@ var Cost = React.createClass({
       <div>
         High Cash Asking Price: {this.props.total}
       </div>
+    )
+  }
+});
+
+var Premium = React.createClass({
+  render: function() {
+    var originalTotalCost = this.props.total,
+        oversizePremiums = getOversizePremium(this.props.carat),
+        premiumMin = (originalTotalCost * oversizePremiums.min).toFixed(2),
+        premiumMax = (originalTotalCost * oversizePremiums.max).toFixed(2),
+        premiumMessage = "Oversized: price can range from " + premiumMin + " to " + premiumMax;
+
+    // conditionally display the premium message
+    return (
+      <span>
+        {premiumMin > 1 && premiumMessage}
+      </span>
     )
   }
 });
@@ -111,7 +156,7 @@ var DiamondForm = React.createClass({
   },
   getInitialState: function() {
     return {
-      carat: .92,
+      carat: .98,
       color: 1,
       clarity: 1
     };
@@ -145,6 +190,7 @@ var DiamondForm = React.createClass({
           interval="1"
           onCharacteristicChange={this.handleCharacteristicChange} />
         <Cost total={totalCost} />
+        <Premium total={totalCost} carat={this.state.carat}/>
       </form>
     );
   }
