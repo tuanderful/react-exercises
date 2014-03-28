@@ -89,6 +89,23 @@ var Cost = React.createClass({
   }
 });
 
+// Component to handle both increment and decrement
+var Iterate = React.createClass({
+  componentDidMount: function() {
+    this.getDOMNode().disabled = this.props.disabled;
+  },
+  componentDidUpdate: function() {
+    this.getDOMNode().disabled = this.props.disabled;
+  },
+  render: function() {
+    return (
+      <button onClick={this.props.onClick} >
+        {this.props.label}
+      </button>
+    )
+  }
+});
+
 var Premium = React.createClass({
   render: function() {
     var originalTotalCost = this.props.total,
@@ -107,29 +124,52 @@ var Premium = React.createClass({
 });
 
 var Characteristic = React.createClass({
-  handleChange: function() {
-    var value = this.refs.value.getDOMNode().value.trim();
+  increment: function(event){
+    this.handleChange(event, this.props.val + this.props.interval);
+    return false;
+  },
+  decrement: function(event){
+    this.handleChange(event, this.props.val - this.props.interval);
+    return false;
+  },
+  // when no arg passed, simply bubble the value up to the owner
+  // if a value is passed, set the value then bubble up.
+  handleChange: function(e, value) {
+    // if no value is passed in, we are handling a change to the input directly.
+    // so we'll need to cast to string
+    value = (typeof value === "undefined") ? +this.refs.value.getDOMNode().value.trim() : value;
+
+    // TODO: validate change
+    if (value > this.props.max)
+      value = this.props.max;
+    else if (value < this.props.min)
+      value = this.props.min;
 
     // propagate the value change up to the owner so total price can be recalculated
     this.props.onCharacteristicChange(this.props.name, value);
   },
   render: function() {
-    var longValueName = this.props.val;
+    var longValueName = this.props.val,
+        incrDisabled = this.props.val + this.props.interval > this.props.max,
+        decrDisabled = this.props.val - this.props.interval < this.props.min;
 
     // Prettify
     if(this.props.name !== 'carat')
       longValueName = CONSTANTS[this.props.name.toUpperCase()][this.props.val];
 
+// <input type="text" name={this.props.name} ref="value"
+//   min={this.props.min}
+//   max={this.props.max}
+//   value={this.props.val}
+//   step={this.props.interval}
+//   onChange={this.handleChange} />
+
     return (
       <div>
         <label>{this.props.name}</label>
-        <input type="range" name="points" ref="value"
-          min={this.props.min}
-          max={this.props.max}
-          value={this.props.val}
-          step={this.props.interval}
-          onChange={this.handleChange} />
+        <Iterate label="Decrement" onClick={this.decrement} disabled={decrDisabled} />
         {longValueName}
+        <Iterate label="Increment" onClick={this.increment} disabled={incrDisabled} />
       </div>
     );
   }
@@ -139,13 +179,14 @@ var DiamondForm = React.createClass({
   /** internal method to calculate the cost based on this state
    */
   _calculateTotalCost: function() {
+    return 1; //TODO: remove short circuit
     var multiplier,
         ptIndex = getPriceTableIndex(this.state.carat),
         actualColor = CONSTANTS.COLOR[this.state.color];
 
     multiplier = PRICE_TABLE[ptIndex][actualColor][this.state.clarity];
 
-    return multiplier * 100 * this.state.carat;
+    //return multiplier * 100 * this.state.carat;
   },
   handleCharacteristicChange: function(name, value){
     // We cannot simply call setState and pass in an object, since `name` is 
@@ -170,24 +211,24 @@ var DiamondForm = React.createClass({
       <form>
         <Characteristic
           name="carat"
-          min="0"
-          max="4"
+          min={0}
+          max={4}
           val={this.state.carat}
-          interval=".01"
+          interval={.01}
           onCharacteristicChange={this.handleCharacteristicChange} />
         <Characteristic
           name="color"
-          min="0"
-          max="9"
+          min={0}
+          max={9}
           val={this.state.color}
-          interval="1"
+          interval={1}
           onCharacteristicChange={this.handleCharacteristicChange} />
         <Characteristic
           name="clarity"
-          min="0"
-          max="10"
+          min={0}
+          max={10}
           val={this.state.clarity}
-          interval="1"
+          interval={1}
           onCharacteristicChange={this.handleCharacteristicChange} />
         <Cost total={totalCost} />
         <Premium total={totalCost} carat={this.state.carat}/>
