@@ -9,7 +9,15 @@ var PRICE_TABLE = {
   // .90 - .99
   11: {
     D: [152, 118, 103,  88,  77,  70,  62,  48,  38,  22,  15],
-    E: [118, 103,  94,  79,  73,  65,  59,  45,  37,  21,  14]
+    E: [118, 103,  94,  79,  73,  65,  59,  45,  37,  21,  14],
+    F: [103,  94,  84,  74,  69,  63,  55,  43,  36,  20,  14],
+    G: [ 93,  84,  74,  69,  64,  59,  52,  41,  34,  19,  13],
+    H: [ 85,  74,  69,  63,  60,  55,  49,  38,  32,  18,  13],
+    I: [ 70,  62,  59,  55,  52,  50,  44,  34,  30,  17,  12],
+    J: [ 54,  51,  49,  47,  46,  44,  39,  31,  26,  16,  11],
+    K: [ 44,  42,  40,  38,  37,  35,  32,  26,  23,  15,  10],
+    L: [ 39,  37,  35,  34,  32,  30,  27,  23,  20,  14,   9],
+    M: [ 36,  34,  32,  30,  29,  27,  24,  21,  17,  12,   8]
   }
 }
 
@@ -123,6 +131,47 @@ var Premium = React.createClass({
   }
 });
 
+var NumericCharacteristic = React.createClass({
+  increment: function(event){
+    this.handleChange(event, this.props.val + this.props.interval);
+    return false;
+  },
+  decrement: function(event){
+    this.handleChange(event, this.props.val - this.props.interval);
+    return false;
+  },
+  // when no arg passed, simply bubble the value up to the owner
+  // if a value is passed, set the value then bubble up.
+  handleChange: function(event, value) {
+    // if no value is passed in, we are handling a change to the input directly.
+    // so we'll need to cast to string
+    value = (typeof value === "undefined") ? +this.refs.value.getDOMNode().value.trim() : value;
+
+    // TODO: validate change
+    if (value > this.props.max)
+      value = this.props.max;
+    else if (value < this.props.min)
+      value = this.props.min;
+
+    // propagate the value change up to the owner so total price can be recalculated
+    this.props.onCharacteristicChange(this.props.name, value);
+  },
+  render: function() {
+    var displayValue = parseFloat(this.props.val).toFixed(2),
+        incrDisabled = this.props.val + this.props.interval > this.props.max,
+        decrDisabled = this.props.val - this.props.interval < this.props.min;
+
+    return (
+      <div>
+        <label>{this.props.name}</label>
+        <Iterate label="Decrement" onClick={this.decrement} disabled={decrDisabled} />
+        <div className="value">{displayValue}</div>
+        <Iterate label="Increment" onClick={this.increment} disabled={incrDisabled} />
+      </div>
+    );
+  }
+});
+
 var Characteristic = React.createClass({
   increment: function(event){
     this.handleChange(event, this.props.val + this.props.interval);
@@ -149,13 +198,9 @@ var Characteristic = React.createClass({
     this.props.onCharacteristicChange(this.props.name, value);
   },
   render: function() {
-    var longValueName = this.props.val,
+    var displayValue = CONSTANTS[this.props.name.toUpperCase()][this.props.val],
         incrDisabled = this.props.val + this.props.interval > this.props.max,
         decrDisabled = this.props.val - this.props.interval < this.props.min;
-
-    // Prettify
-    if(this.props.name !== 'carat')
-      longValueName = CONSTANTS[this.props.name.toUpperCase()][this.props.val];
 
 // <input type="text" name={this.props.name} ref="value"
 //   min={this.props.min}
@@ -164,12 +209,13 @@ var Characteristic = React.createClass({
 //   step={this.props.interval}
 //   onChange={this.handleChange} />
 
+    // NOTE! Here, the labels are "inverted" in that the decrement actually performs increment
     return (
       <div>
         <label>{this.props.name}</label>
-        <Iterate label="Decrement" onClick={this.decrement} disabled={decrDisabled} />
-        <div className="value">{longValueName}</div>
-        <Iterate label="Increment" onClick={this.increment} disabled={incrDisabled} />
+        <Iterate label="Decrement" onClick={this.increment} disabled={incrDisabled} />
+        <div className="value">{displayValue}</div>
+        <Iterate label="Increment" onClick={this.decrement} disabled={decrDisabled} />
       </div>
     );
   }
@@ -179,14 +225,14 @@ var DiamondForm = React.createClass({
   /** internal method to calculate the cost based on this state
    */
   _calculateTotalCost: function() {
-    return 1; //TODO: remove short circuit
+    //return 1; //TODO: remove short circuit
     var multiplier,
         ptIndex = getPriceTableIndex(this.state.carat),
         actualColor = CONSTANTS.COLOR[this.state.color];
 
     multiplier = PRICE_TABLE[ptIndex][actualColor][this.state.clarity];
 
-    //return multiplier * 100 * this.state.carat;
+    return multiplier * 100 * this.state.carat;
   },
   handleCharacteristicChange: function(name, value){
     // We cannot simply call setState and pass in an object, since `name` is 
@@ -209,7 +255,7 @@ var DiamondForm = React.createClass({
 
     return (
       <form>
-        <Characteristic
+        <NumericCharacteristic
           name="carat"
           min={0}
           max={4}
