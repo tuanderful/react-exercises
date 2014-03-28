@@ -99,8 +99,8 @@ var Iterate = React.createClass({
   },
   render: function() {
     return (
-      <button onClick={this.props.onClick} >
-        {this.props.label}
+      <button onClick={this.props.onClick} className={this.props.label.toLowerCase() + '-button'}>
+        {this.props.label == 'Increment' ? '+' : '-'}
       </button>
     )
   }
@@ -134,7 +134,7 @@ var Characteristic = React.createClass({
   },
   // when no arg passed, simply bubble the value up to the owner
   // if a value is passed, set the value then bubble up.
-  handleChange: function(e, value) {
+  handleChange: function(event, value) {
     // if no value is passed in, we are handling a change to the input directly.
     // so we'll need to cast to string
     value = (typeof value === "undefined") ? +this.refs.value.getDOMNode().value.trim() : value;
@@ -168,7 +168,7 @@ var Characteristic = React.createClass({
       <div>
         <label>{this.props.name}</label>
         <Iterate label="Decrement" onClick={this.decrement} disabled={decrDisabled} />
-        {longValueName}
+        <div className="value">{longValueName}</div>
         <Iterate label="Increment" onClick={this.increment} disabled={incrDisabled} />
       </div>
     );

@@ -2,3 +2,66 @@ body, html {
   font-family: 'Open Sans', Arial, sans-serif;
   font-weight: 400;
 }
+
+
+/* input container */
+form > div {
+  margin: 20px 20px 50px;
+  height: 80px;
+  position: relative;
+}
+
+button {
+  background: none;
+  border: 1px solid #eee;
+  color: #8FD1F1;
+  height: 100%;
+
+
+
+  width: 40px;
+  outline: none;
+}
+
+  button:hover {
+    color: #7ABCDE;
+  }
+
+  button:disabled {
+    color: #C2EDFF;
+  }
+
+label {
+  position: absolute;
+  width: 120px;
+  left: 40px;
+  text-align: center;
+  color: #b3e2ff;
+}
+
+.value {
+  display: inline-block;
+  width: 120px;
+  text-align: center;
+  font-size: 48px;
+  color: #6CC0E5;
+  padding-top: 10px;
+  line-height: 64px;
+
+
+
+  position: relative;
+  top: 10px;
+}
+
+.increment-button {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-left: 0;
+}
+
+.decrement-button {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-right: 0;
+}
