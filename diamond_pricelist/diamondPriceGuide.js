@@ -21,6 +21,36 @@ var PRICE_TABLE = {
   }
 }
 
+
+
+var DESCRIPTIONS = {
+  clarity: new (function (){
+    this.IF = 'Internally flawless - no internal inclusions.';
+    this.VVS1 =  'Very very small inclusions. Very difficult to detect under 10x magnification.';
+    this.VVS2 = this.VVS1;
+    this.VS1 = 'Very small inclusions. Can be seen under 10x magnification and in some cases to the naked eye.';
+    this.VS2 = this.VS1;
+    this.SI1 = 'Small inclusions. Can be seen under 10x magnification and may be visible to the naked eye.';
+    this.SI2 = this.SI1;
+    this.SI3 = this.SI1;
+    this.I1 =  'Imperfect. Inclusions are visible under 10x magnification and in most cases to the naked eye.';
+    this.I2 = this.I1;
+    this.I3 = this.I1;
+  })(),
+  color: {
+    D: '',
+    E: '',
+    F: '',
+    G: '',
+    H: '',
+    I: '',
+    J: '',
+    K: '',
+    L: '',
+    M: ''
+  }
+}
+
 function getPriceTableIndex(caratSize) {
   if (caratSize >= .01 && caratSize <= .03)
     return 1;
@@ -90,8 +120,8 @@ function getOversizePremium(carat) {
 var Cost = React.createClass({
   render: function() {
     return (
-      <div>
-        High Cash Asking Price: {this.props.total}
+      <div className="value">
+        {this.props.total}
       </div>
     )
   }
@@ -124,9 +154,9 @@ var Premium = React.createClass({
 
     // conditionally display the premium message
     return (
-      <span>
+      <div className="oversizePremiums">
         {premiumMin > 1 && premiumMessage}
-      </span>
+      </div>
     )
   }
 });
@@ -163,10 +193,12 @@ var NumericCharacteristic = React.createClass({
 
     return (
       <div>
-        <label>{this.props.name}</label>
-        <Iterate label="Decrement" onClick={this.decrement} disabled={decrDisabled} />
-        <div className="value">{displayValue}</div>
-        <Iterate label="Increment" onClick={this.increment} disabled={incrDisabled} />
+        <div className={this.props.name + '-container'}>
+          <label>{this.props.name}</label>
+          <Iterate label="Decrement" onClick={this.decrement} disabled={decrDisabled} />
+          <div className="value">{displayValue}</div>
+          <Iterate label="Increment" onClick={this.increment} disabled={incrDisabled} />
+        </div>
       </div>
     );
   }
@@ -201,6 +233,7 @@ var Characteristic = React.createClass({
     var displayValue = CONSTANTS[this.props.name.toUpperCase()][this.props.val],
         incrDisabled = this.props.val + this.props.interval > this.props.max,
         decrDisabled = this.props.val - this.props.interval < this.props.min;
+        description = DESCRIPTIONS[this.props.name][displayValue];
 
 // <input type="text" name={this.props.name} ref="value"
 //   min={this.props.min}
@@ -212,10 +245,14 @@ var Characteristic = React.createClass({
     // NOTE! Here, the labels are "inverted" in that the decrement actually performs increment
     return (
       <div>
-        <label>{this.props.name}</label>
-        <Iterate label="Decrement" onClick={this.increment} disabled={incrDisabled} />
-        <div className="value">{displayValue}</div>
-        <Iterate label="Increment" onClick={this.decrement} disabled={decrDisabled} />
+        <div className={this.props.name + '-container'}>
+          <label>{this.props.name}</label>
+          <Iterate label="Decrement" onClick={this.increment} disabled={incrDisabled} />
+          <div className="value">{displayValue}</div>
+          <div className={this.props.name + '-diagram ' + this.props.name + '-diagram-' + displayValue} />
+          <Iterate label="Increment" onClick={this.decrement} disabled={decrDisabled} />
+        </div>
+        <p className="description">{description}</p>
       </div>
     );
   }
@@ -234,7 +271,7 @@ var DiamondForm = React.createClass({
 
     return multiplier * 100 * this.state.carat;
   },
-  handleCharacteristicChange: function(name, value){
+  handleCharacteristicChange: function(name, value) {
     // We cannot simply call setState and pass in an object, since `name` is 
     // a variable. We have to use bracket notation.
     var currentState = this.state;
@@ -276,7 +313,12 @@ var DiamondForm = React.createClass({
           val={this.state.clarity}
           interval={1}
           onCharacteristicChange={this.handleCharacteristicChange} />
-        <Cost total={totalCost} />
+        <div className="totalCost">
+          <label>
+            High Cash Asking Price
+          </label>
+          <Cost total={totalCost} />
+        </div>
         <Premium total={totalCost} carat={this.state.carat}/>
       </form>
     );

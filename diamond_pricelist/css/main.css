@@ -1,22 +1,39 @@
 body, html {
   font-family: 'Open Sans', Arial, sans-serif;
-  font-weight: 400;
+  font-weight: 300;
+}
+
+
+#content {
+  width: 320px;
+  margin: 0 auto;
 }
 
 
 /* input container */
 form > div {
-  margin: 20px 20px 50px;
+  margin-bottom: 50px;
+}
+
+.carat-container,
+.color-container,
+.clarity-container {
+  margin: 20px 0 0;
   height: 80px;
   position: relative;
+
+  border-radius: 5px;
+  border: 1px solid #eee;
 }
 
 button {
   background: none;
-  border: 1px solid #eee;
+  border: 0;
+  font-weight: 600;
+  font-size: 18px;
   color: #8FD1F1;
   height: 100%;
-
+  float: left;
 
 
   width: 40px;
@@ -31,12 +48,17 @@ button {
     color: #C2EDFF;
   }
 
+  .increment-button {
+    float: right;
+  }
+
 label {
   position: absolute;
   width: 120px;
   left: 40px;
   text-align: center;
   color: #b3e2ff;
+  top: 3px;
 }
 
 .value {
@@ -45,23 +67,97 @@ label {
   text-align: center;
   font-size: 48px;
   color: #6CC0E5;
-  padding-top: 10px;
+  padding-top: 14px;
   line-height: 64px;
+  float: left;
+
+  margin-right: 10px;
+}
+
+.carat-container .value,
+.carat-container label {
+  width: 238px;
+  margin-right: 0;
+}
 
 
 
+
+.color-diagram,
+.clarity-diagram {
+  width: 100px;
+  float: left;
+  overflow: hidden;
+}
+
+.color-diagram {
+  background: url('../img/color.png');
+  height: 80px;
+  margin-left: -10px;
+  margin-right: 10px;
+}
+
+.clarity-diagram {
+  background: url('../img/clarity.png');
+  height: 90px;
+  margin-top: -5px;
+  margin-left: -10px;
+  margin-right: 10px;
+}
+
+.color-diagram-D { background-position:    0px -5px;}
+.color-diagram-E { background-position: -100px -5px;}
+.color-diagram-F { background-position: -200px -5px;}
+.color-diagram-G { background-position: -300px -5px;}
+.color-diagram-H { background-position: -400px -5px;}
+.color-diagram-I { background-position: -500px -5px;}
+.color-diagram-J { background-position: -600px -5px;}
+.color-diagram-K { background-position: -700px -5px;}
+.color-diagram-L { background-position: -800px -5px;}
+.color-diagram-M { background-position: -900px -5px;}
+
+
+.clarity-diagram-VVS1 { background-position: -100px 0;}
+.clarity-diagram-VVS2 { background-position: -100px 0;}
+.clarity-diagram-VS1  { background-position: -200px 0;}
+.clarity-diagram-VS2  { background-position: -200px 0;}
+.clarity-diagram-SI1  { background-position: -300px 0;}
+.clarity-diagram-SI2  { background-position: -300px 0;}
+.clarity-diagram-SI3  { background-position: -400px 0;}
+.clarity-diagram-I1  { background-position: -400px 0;}
+.clarity-diagram-I2  { background-position: -500px 0;}
+.clarity-diagram-I3  { background-position: -500px 0;}
+
+
+
+
+
+.totalCost {
+  margin-bottom: 14px;
+}
+
+.totalCost label {
+  left: 10px;
   position: relative;
-  top: 10px;
+  float: left;
+  margin-top: 10px;
+  margin-right: 20px;
 }
 
-.increment-button {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-left: 0;
+.totalCost .value {
+  padding-top: 0;
 }
 
-.decrement-button {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-right: 0;
+.oversizePremiums,
+.description {
+  clear: both;
+  font-size: 12px;
+  color: #BBBBC9;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.oversizePremiums {
+  font-size: 14px;
+  color: #AAAAB7;
 }
