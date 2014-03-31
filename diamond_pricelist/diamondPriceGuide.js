@@ -18,6 +18,31 @@ var PRICE_TABLE = {
     K: [ 44,  42,  40,  38,  37,  35,  32,  26,  23,  15,  10],
     L: [ 39,  37,  35,  34,  32,  30,  27,  23,  20,  14,   9],
     M: [ 36,  34,  32,  30,  29,  27,  24,  21,  17,  12,   8]
+  },
+  // 1.0 - 1.49
+  12: {
+    D: [275, 195, 170, 133, 116, 88,  75,  60,  47,  27,  17],
+    E: [190, 165, 133, 115, 102, 85,  71,  58,  45,  26,  16],
+    F: [160, 133, 116, 107, 92,  82,  69,  56,  44,  25,  15],
+    G: [130, 116, 106, 91,  85,  78,  66,  54,  43,  24,  14],
+    H: [106, 98,  89,  81,  77,  71,  63,  51,  41,  23,  14],
+    I: [88,  83,  76,  72,  69,  66,  59,  47,  37,  22,  13],
+    J: [75,  70,  67,  64,  60,  57,  54,  42,  32,  20,  13],
+    K: [63,  60,  57,  55,  53,  50,  46,  37,  30,  18,  12],
+    L: [54,  52,  50,  48,  46,  44,  40,  34,  28,  17,  11],
+    M: [47,  43,  40,  38,  36,  34,  31,  27,  25,  16,  11]
+  },
+  13: {
+    D: [336, 243, 211, 177, 155, 115, 93,  72,  54,  31,  18],
+    E: [238, 206, 177, 160, 142, 112, 90,  70,  51,  30,  17],
+    F: [206, 177, 153, 140, 127, 107, 86,  67,  50,  29,  16],
+    G: [166, 150, 135, 120, 115, 101, 81,  65,  49,  28,  16],
+    H: [134, 125, 113, 105, 100, 92,  76,  61,  47,  27,  16],
+    I: [107, 102, 96,  89,  85,  80,  69,  56,  43,  25,  15],
+    J: [93,  86,  82,  77,  72,  67,  61,  49,  38,  23,  15],
+    K: [74,  70,  67,  65,  62,  57,  52,  43,  35,  20,  14],
+    L: [62,  60,  58,  56,  54,  50,  45,  38,  32,  19,  13],
+    M: [52,  49,  46,  44,  42,  41,  39,  33,  28,  18,  13]
   }
 }
 
@@ -25,30 +50,30 @@ var PRICE_TABLE = {
 
 var DESCRIPTIONS = {
   clarity: new (function (){
-    this.IF = 'Internally flawless - no internal inclusions.';
-    this.VVS1 =  'Very very small inclusions. Very difficult to detect under 10x magnification.';
+    this.IF = 'Internally flawless. No inclusions and only blemishes are visible to a skilled grader using 10× magnification.';
+    this.VVS1 =  'Very very small inclusions.  Inclusions are difficult for a skilled grader to see under 10× magnification.';
     this.VVS2 = this.VVS1;
-    this.VS1 = 'Very small inclusions. Can be seen under 10x magnification and in some cases to the naked eye.';
+    this.VS1 = 'Very small inclusions. Inclusions are minor and range from difficult to somewhat easy for a skilled grader to see under 10x magnification, and in some cases to the naked eye.';
     this.VS2 = this.VS1;
-    this.SI1 = 'Small inclusions. Can be seen under 10x magnification and may be visible to the naked eye.';
+    this.SI1 = 'Small inclusions. Inclusions are noticeable to a skilled grader under 10x magnification, and may be visible to the naked eye.';
     this.SI2 = this.SI1;
     this.SI3 = this.SI1;
-    this.I1 =  'Imperfect. Inclusions are visible under 10x magnification and in most cases to the naked eye.';
+    this.I1 =  'Imperfect. Inclusions are obvious under 10× magnification, in most cases to the naked eye, and may affect transparency and brilliance.';
     this.I2 = this.I1;
     this.I3 = this.I1;
   })(),
-  color: {
-    D: '',
-    E: '',
-    F: '',
-    G: '',
-    H: '',
-    I: '',
-    J: '',
-    K: '',
-    L: '',
-    M: ''
-  }
+  color: new (function(){
+    this.D = 'Colorless';
+    this.E = this.D;
+    this.F = this.D;
+    this.G = 'Near Colorless';
+    this.H = this.G;
+    this.I = this.G;
+    this.J = this.G;
+    this.K = 'Faint';
+    this.L = this.K;
+    this.M = this.K;
+  })()
 }
 
 function getPriceTableIndex(caratSize) {
@@ -90,38 +115,65 @@ function getPriceTableIndex(caratSize) {
 
 function getOversizePremium(carat) {
   if (carat >= .6 && carat <= .69)
-    return {min: 1.07, max: 1.10};
+    return {min: 7, max: 10, caratMin: .6, caratMax: .69};
 
   else if (carat >= .8 && carat <= .89)
-    return {min: 1.07, max: 1.12};
+    return {min: 7, max: 12, caratMin: .8, caratMax: .89};
 
   else if (carat >= .95 && carat <= .99)
-    return {min: 1.05, max: 1.10};
+    return {min: 5, max: 10, caratMin: .95, caratMax: .99};
 
   else if (carat >= 1.25 && carat <= 1.49)
-    return {min: 1.05, max: 1.10};
+    return {min: 5, max: 10, caratMin: 1.25, caratMax: 1.49};
 
   else if (carat >= 1.7 && carat <= 1.99)
-    return {min: 1.07, max: 1.12};
+    return {min: 7, max: 12, caratMin: 1.7, caratMax: 1.99};
 
   else if (carat >= 2.5 && carat <= 2.99)
-    return {min: 1.05, max: 1.10};
+    return {min: 5, max: 10, caratMin: 2.5, caratMax: 2.99};
 
   else if (carat >= 3.5 && carat <= 3.99)
-    return {min: 1.05, max: 1.10};
+    return {min: 5, max: 10, caratMin: 3.5, caratMax: 3.99};
 
   else if (carat >= 4.5 && carat <= 4.99)
-    return {min: 1.05, max: 1.10};
+    return {min: 5, max: 10, caratMin: 4.5, caratMax: 4.99};
 
-  return 1;
+  return null;
 }
 
 
 var Cost = React.createClass({
   render: function() {
+    var totalCost = this.props.multiplier * 100 * this.props.carat,
+        number = totalCost.toString(), 
+        dollars = number.split('.')[0], 
+        //cents = (number.split('.')[1] || '') +'00';
+        formattedTotal = dollars.split('').reverse().join('')
+            .replace(/(\d{3}(?!$))/g, '$1,')
+            .split('').reverse().join('');
+
     return (
       <div className="value">
-        {this.props.total}
+        {formattedTotal}
+      </div>
+    )
+  }
+});
+
+var Premium = React.createClass({
+  render: function() {
+    var oversizePremiums = getOversizePremium(this.props.carat);
+
+    if (oversizePremiums !== null) {
+      premiumMin = (this.props.multiplier * (100 + oversizePremiums.min) * this.props.carat).toFixed(2),
+      premiumMax = (this.props.multiplier * (100 + oversizePremiums.max) * this.props.carat).toFixed(2),
+      premiumMessage = "Oversize: price can range from " + premiumMin + " to " + premiumMax;
+    }
+
+    // conditionally display the premium message
+    return (
+      <div className="oversizePremiums">
+        {oversizePremiums !== null && premiumMessage}
       </div>
     )
   }
@@ -144,23 +196,8 @@ var Iterate = React.createClass({
   }
 });
 
-var Premium = React.createClass({
-  render: function() {
-    var originalTotalCost = this.props.total,
-        oversizePremiums = getOversizePremium(this.props.carat),
-        premiumMin = (originalTotalCost * oversizePremiums.min).toFixed(2),
-        premiumMax = (originalTotalCost * oversizePremiums.max).toFixed(2),
-        premiumMessage = "Oversized: price can range from " + premiumMin + " to " + premiumMax;
 
-    // conditionally display the premium message
-    return (
-      <div className="oversizePremiums">
-        {premiumMin > 1 && premiumMessage}
-      </div>
-    )
-  }
-});
-
+// Primarily for Carat
 var NumericCharacteristic = React.createClass({
   increment: function(event){
     this.handleChange(event, this.props.val + this.props.interval);
@@ -175,7 +212,8 @@ var NumericCharacteristic = React.createClass({
   handleChange: function(event, value) {
     // if no value is passed in, we are handling a change to the input directly.
     // so we'll need to cast to string
-    value = (typeof value === "undefined") ? +this.refs.value.getDOMNode().value.trim() : value;
+    value = (typeof value === "undefined") ? (+this.refs.value.getDOMNode().value.trim()).toFixed(2) : (+value).toFixed(2);
+    value = +value;
 
     // TODO: validate change
     if (value > this.props.max)
@@ -186,54 +224,6 @@ var NumericCharacteristic = React.createClass({
     // propagate the value change up to the owner so total price can be recalculated
     this.props.onCharacteristicChange(this.props.name, value);
   },
-  render: function() {
-    var displayValue = parseFloat(this.props.val).toFixed(2),
-        incrDisabled = this.props.val + this.props.interval > this.props.max,
-        decrDisabled = this.props.val - this.props.interval < this.props.min;
-
-    return (
-      <div>
-        <div className={this.props.name + '-container'}>
-          <label>{this.props.name}</label>
-          <Iterate label="Decrement" onClick={this.decrement} disabled={decrDisabled} />
-          <div className="value">{displayValue}</div>
-          <Iterate label="Increment" onClick={this.increment} disabled={incrDisabled} />
-        </div>
-      </div>
-    );
-  }
-});
-
-var Characteristic = React.createClass({
-  increment: function(event){
-    this.handleChange(event, this.props.val + this.props.interval);
-    return false;
-  },
-  decrement: function(event){
-    this.handleChange(event, this.props.val - this.props.interval);
-    return false;
-  },
-  // when no arg passed, simply bubble the value up to the owner
-  // if a value is passed, set the value then bubble up.
-  handleChange: function(event, value) {
-    // if no value is passed in, we are handling a change to the input directly.
-    // so we'll need to cast to string
-    value = (typeof value === "undefined") ? +this.refs.value.getDOMNode().value.trim() : value;
-
-    // TODO: validate change
-    if (value > this.props.max)
-      value = this.props.max;
-    else if (value < this.props.min)
-      value = this.props.min;
-
-    // propagate the value change up to the owner so total price can be recalculated
-    this.props.onCharacteristicChange(this.props.name, value);
-  },
-  render: function() {
-    var displayValue = CONSTANTS[this.props.name.toUpperCase()][this.props.val],
-        incrDisabled = this.props.val + this.props.interval > this.props.max,
-        decrDisabled = this.props.val - this.props.interval < this.props.min;
-        description = DESCRIPTIONS[this.props.name][displayValue];
 
 // <input type="text" name={this.props.name} ref="value"
 //   min={this.props.min}
@@ -242,14 +232,62 @@ var Characteristic = React.createClass({
 //   step={this.props.interval}
 //   onChange={this.handleChange} />
 
+  render: function() {
+    var _val = this.props.val,
+        _interval = this.props.interval,
+        _name = this.props.name,
+        displayValue = this.props.val,
+        incrDisabled = _val + _interval > this.props.max,
+        decrDisabled = _val - _interval < this.props.min,
+        oversizePremium = getOversizePremium(this.props.val),
+        description = '';
+
+        if (oversizePremium !== null) {
+          description = "Diamonds weighing between " + oversizePremium.caratMin + " and " + oversizePremium.caratMax + " may trade at a premium";
+        }
+
+    return (
+      <div>
+        <div className={_name + '-container'}>
+          <label>{_name}</label>
+          <Iterate label="Decrement" onClick={this.decrement} disabled={decrDisabled} />
+          <div className="value">{displayValue}</div>
+          <Iterate label="Increment" onClick={this.increment} disabled={incrDisabled} />
+        </div>
+        <p className="description">{description}</p>
+      </div>
+    );
+  }
+});
+
+var Characteristic = React.createClass({
+  // when no arg passed, simply bubble the value up to the owner
+  // if a value is passed, set the value then bubble up.
+  increment: function(){
+    this.props.onCharacteristicChange(this.props.name, this.props.val + this.props.interval);
+    return false;
+  },
+  decrement: function(){
+    this.props.onCharacteristicChange(this.props.name, this.props.val - this.props.interval);
+    return false;
+  },
+  render: function() {
+    var _val = this.props.val,
+        _interval = this.props.interval,
+        _name = this.props.name,
+        displayValue = CONSTANTS[this.props.name.toUpperCase()][this.props.val],
+        incrDisabled = _val + _interval > this.props.max,
+        decrDisabled = _val - _interval < this.props.min;
+        description = DESCRIPTIONS[this.props.name][displayValue];
+
     // NOTE! Here, the labels are "inverted" in that the decrement actually performs increment
     return (
       <div>
-        <div className={this.props.name + '-container'}>
-          <label>{this.props.name}</label>
+        <div className={_name + '-container'}>
+          <label>{_name}</label>
           <Iterate label="Decrement" onClick={this.increment} disabled={incrDisabled} />
           <div className="value">{displayValue}</div>
-          <div className={this.props.name + '-diagram ' + this.props.name + '-diagram-' + displayValue} />
+          <div className={_name + '-diagram ' + _name + '-diagram-' + displayValue} />
           <Iterate label="Increment" onClick={this.decrement} disabled={decrDisabled} />
         </div>
         <p className="description">{description}</p>
@@ -259,17 +297,12 @@ var Characteristic = React.createClass({
 });
 
 var DiamondForm = React.createClass({
-  /** internal method to calculate the cost based on this state
-   */
-  _calculateTotalCost: function() {
-    //return 1; //TODO: remove short circuit
+  _calculateMultiplier: function() {
     var multiplier,
         ptIndex = getPriceTableIndex(this.state.carat),
         actualColor = CONSTANTS.COLOR[this.state.color];
 
-    multiplier = PRICE_TABLE[ptIndex][actualColor][this.state.clarity];
-
-    return multiplier * 100 * this.state.carat;
+    return PRICE_TABLE[ptIndex][actualColor][this.state.clarity];
   },
   handleCharacteristicChange: function(name, value) {
     // We cannot simply call setState and pass in an object, since `name` is 
@@ -280,7 +313,7 @@ var DiamondForm = React.createClass({
   },
   getInitialState: function() {
     return {
-      carat: .98,
+      carat: 1.24,
       color: 1,
       clarity: 1
     };
@@ -288,7 +321,7 @@ var DiamondForm = React.createClass({
   componentWillMount: function() {
   },
   render: function() {
-    var totalCost = this._calculateTotalCost();
+    var multiplier = this._calculateMultiplier();
 
     return (
       <form>
@@ -317,9 +350,9 @@ var DiamondForm = React.createClass({
           <label>
             High Cash Asking Price
           </label>
-          <Cost total={totalCost} />
+          <Cost multiplier={multiplier} carat={this.state.carat} />
         </div>
-        <Premium total={totalCost} carat={this.state.carat}/>
+        <Premium multiplier={multiplier} carat={this.state.carat}/>
       </form>
     );
   }
